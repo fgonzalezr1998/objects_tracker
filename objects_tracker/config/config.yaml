@@ -1,0 +1,2 @@
+bboxes3d_topic: /darknet_ros_3d/bounding_boxes
+interested_classes: ["person", "book"]

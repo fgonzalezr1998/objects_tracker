@@ -1,0 +1,7 @@
+<launch>
+
+<node pkg="objects_tracker" type="objects_tracker_node" name="objects_tracker_node" output="screen">
+  <rosparam command="load" file="$(find objects_tracker)/config/config.yaml" />
+</node>
+
+</launch>
