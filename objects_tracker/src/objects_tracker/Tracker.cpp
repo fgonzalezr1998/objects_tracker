@@ -58,6 +58,15 @@ Tracker::confObjExists(const std::string & class_name)
   return false;
 }
 
+bool
+Tracker::poseIsEqual(const StimationType & obj_stimation,
+  double x, double y, double z)
+{
+  // CODE THIS
+
+  return true;
+}
+
 void
 Tracker::add(const std::string & class_name)
 {
@@ -74,6 +83,33 @@ Tracker::add(const std::string & class_name)
   value.clear();
 
   tracked_objs_[class_name] = value;
+}
+
+void
+Tracker::update(const std::string & class_name, double x, double y, double z)
+{
+  // Get the objects whose class is 'class_name'
+
+  std::map<int, StimationType> objs = tracked_objs_[class_name];
+  bool found = false;
+  for (auto & elem : objs)
+  {
+    if (poseIsEqual(elem.second, x, y, z))
+    {
+      // Update control and state data
+
+      found = true;
+    }
+  }
+
+  if (!found)
+  {
+    // Compose a new element and intert it in the map table 'objs'
+  }
+
+  // Update the tracked objects
+
+  tracked_objs_[class_name] = objs;
 }
 
 void

@@ -50,9 +50,18 @@ ObjectsTracker::ObjectsTracker()
 void
 ObjectsTracker::update()
 {
-  for (const auto bbox : bboxes_received_)
+  double x, y, z;
+  for (const auto & bbox : bboxes_received_)
   {
     ROS_INFO("Do something with [%s]\n", bbox.Class.c_str());
+
+    // Get the center
+
+    x = (bbox.xmin + bbox.xmax) / 2.0;
+    y = (bbox.ymin + bbox.ymax) / 2.0;
+    z = (bbox.zmin + bbox.zmax) / 2.0;
+
+    tracker_->update(bbox.Class, x, y, z);
   }
 }
 

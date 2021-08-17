@@ -62,11 +62,13 @@ struct StateType
 {
   CoordType pose;
   float prob;         // Certainty probability
+  float error;
 };
 
 struct ControlType
 {
   CoordType linear_vel;
+  float error;
 };
 
 struct StimationType
@@ -81,10 +83,13 @@ class Tracker
 public:
   Tracker();
   void add(const std::string & class_name);
+  void update(const std::string & class_name, double x, double y, double z);
   void printObjects();
 
 private:
   bool confObjExists(const std::string & class_name);
+  bool poseIsEqual(const StimationType & obj_stimation,
+    double x, double y, double z);
 
   std::map<std::string, std::map<int, StimationType>> tracked_objs_;
 };
