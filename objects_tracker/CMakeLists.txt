@@ -10,6 +10,7 @@ project(objects_tracker)
 find_package(catkin REQUIRED COMPONENTS
   roslint
   gb_visual_detection_3d_msgs
+  objects_tracker_msgs
   roscpp
 )
 
