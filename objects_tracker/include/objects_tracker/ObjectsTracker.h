@@ -63,6 +63,7 @@ private:
 
   ros::NodeHandle nh_;
   ros::Subscriber bboxes3d_sub_;
+  std::map<std::string, ros::Publisher> pubs_;  // One publisher per object class
   std::string bboxes3d_topic_;
   std::vector<std::string> interested_classes_;
   std::vector<gb_visual_detection_3d_msgs::BoundingBox3d> bboxes_received_;

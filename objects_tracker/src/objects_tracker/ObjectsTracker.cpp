@@ -35,6 +35,7 @@
 /* Author: Fernando González fergonzaramos@yahoo.es  */
 
 #include "objects_tracker/ObjectsTracker.h"
+#include "objects_tracker_msgs/ObjectsTrack.h"
 
 namespace objects_tracker
 {
@@ -75,6 +76,14 @@ ObjectsTracker::configureParams()
 
   for (auto obj : interested_classes_)
   {
+    // Create de dynamic publisher (one per object class)
+
+    ros::Publisher p = nh_.advertise<objects_tracker_msgs::ObjectsTrack>(
+      "/objects_tracker/" + obj, 1);
+    pubs_[obj] = p;
+
+    // Add the object to the Tracker
+
     tracker_->add(obj);
   }
 }

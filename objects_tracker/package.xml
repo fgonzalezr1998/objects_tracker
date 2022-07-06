@@ -50,17 +50,17 @@
   <!--   <doc_depend>doxygen</doc_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
 
-  <build_depend>gb_visual_detection_3d_msgs/BoundingBox3d</build_depend>
-  <build_depend>gb_visual_detection_3d_msgs/BoundingBoxes3d</build_depend>
+  <build_depend>gb_visual_detection_3d_msgs</build_depend>
+  <build_depend>objects_tracker_msgs</build_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>roslint</build_depend>
 
-  <build_export_depend>gb_visual_detection_3d_msgs/BoundingBox3d</build_export_depend>
-  <build_export_depend>gb_visual_detection_3d_msgs/BoundingBoxes3d</build_export_depend>
+  <build_export_depend>gb_visual_detection_3d_msgs</build_export_depend>
+  <build_export_depend>objects_tracker_msgs</build_export_depend>
   <build_export_depend>roscpp</build_export_depend>
   
-  <exec_depend>gb_visual_detection_3d_msgs/BoundingBox3d</exec_depend>
-  <exec_depend>gb_visual_detection_3d_msgs/BoundingBoxes3d</exec_depend>
+  <exec_depend>gb_visual_detection_3d_msgs</exec_depend>
+  <exec_depend>objects_tracker_msgs</exec_depend>
   <exec_depend>roscpp</exec_depend>
 
 
