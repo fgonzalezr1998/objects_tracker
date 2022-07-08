@@ -12,6 +12,7 @@ public:
 		end_ = 5.0;
 		step_ = 0.2;
 		current_pos_ = start_;
+		left_ = true;
 
 		bbox_pub_ = nh_.advertise<gb_visual_detection_3d_msgs::BoundingBox3d>(
 			"/dummy_bbox3d", 1);
@@ -24,7 +25,7 @@ public:
 	{
 		gb_visual_detection_3d_msgs::BoundingBox3d msg;
 		visualization_msgs::Marker marker_msg;
-		double width = 0.1;
+		double width = 0.5;
 		double distance = 3.0;
 
 		// Compose and publish the message
@@ -32,9 +33,16 @@ public:
 		composeMsg(msg, width, distance);
 		bbox_pub_.publish(msg);
 
-		current_pos_ += step_;
+		if (left_)
+			current_pos_ += step_;
+		else
+			current_pos_ -= step_;
+
+
 		if (current_pos_ > end_)
-			current_pos_ = start_;
+			left_ = false;
+		if (current_pos_ < start_)
+			left_ = true;
 
 		// Compose and publish the visual marker
 
@@ -46,6 +54,7 @@ private:
 	ros::NodeHandle nh_;
 	ros::Publisher bbox_pub_;
 	ros::Publisher marker_pub_;
+	bool left_;
 	double start_, end_, step_, current_pos_;
 
 	void
