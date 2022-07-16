@@ -42,6 +42,7 @@ jobs:
       # Compile the code
       - name: Compile the code
         run: |
+          source /opt/ros/noetic/setup.bash
           echo $PWD
           mkdir -p ~/catkin_ws/src
           cd ~/catkin_ws && catkin_make
