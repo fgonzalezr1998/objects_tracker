@@ -8,6 +8,7 @@ project(dummy_tracker)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+	roslint
   gb_visual_detection_3d_msgs
   roscpp
   visualization_msgs
@@ -103,7 +104,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
+# INCLUDE_DIRS include
 #  LIBRARIES dummy_tracker
 #  CATKIN_DEPENDS gb_visual_detection_3d_msgs roscpp visualization_msgs
 #  DEPENDS system_lib
@@ -116,14 +117,14 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+	include
   ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/dummy_tracker.cpp
-# )
+add_library(bbox3d_tracker
+	src/bbox3d_tracker/Bbox3dTracker.cpp
+)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -133,7 +134,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/dummy_tracker_node.cpp)
+add_executable(bboxes3d_tracker_node src/bboxes3d_tracker_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -146,9 +147,10 @@ include_directories(
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(${PROJECT_NAME}_node
-#   ${catkin_LIBRARIES}
-# )
+target_link_libraries(bboxes3d_tracker_node
+	${catkin_LIBRARIES}
+	bbox3d_tracker
+)
 
 #############
 ## Install ##
@@ -204,3 +206,9 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+roslint_cpp(
+	include/bbox3d_tracker/Bbox3dTracker.h
+	src/bbox3d_tracker/Bbox3dTracker.cpp
+	src/bboxes3d_tracker_node.cpp
+)

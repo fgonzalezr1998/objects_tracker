@@ -1,7 +1,7 @@
 /*********************************************************************
 *  Software License Agreement (BSD License)
 *
-*   Copyright (c) 2021
+*   Copyright (c) 2022
 *   All rights reserved.
 *
 *   Redistribution and use in source and binary forms, with or without
@@ -34,24 +34,71 @@
 
 /* Author: Fernando González fergonzaramos@yahoo.es  */
 
-#include "objects_tracker/ObjectsTracker.h"
+#include <string>
+#include <vector>
+#include "bbox3d_tracker/Bbox3dTracker.h"
 
-int
-main(int argc, char ** argv)
+using gb_visual_detection_3d_msgs::BoundingBoxes3d;
+using gb_visual_detection_3d_msgs::BoundingBox3d;
+
+namespace bbox3d_tracker
 {
-  ros::init(argc, argv, "objects_tracker_node");
-
-  objects_tracker::ObjectsTracker *tracker =
-    new objects_tracker::ObjectsTracker();
-
-  ros::Rate rate(10);
-  while (ros::ok())
+  Bbox3dTracker::Bbox3dTracker():
+    nh_("~"), target_class_(""), last_detection_(0.0)
   {
-    ros::spinOnce();
-    tracker->update();
-    rate.sleep();
+    bboxes3d_sub_ = nh_.subscribe(bboxes3d_topic_, 1,
+      &Bbox3dTracker::bboxes3dCallback, this);
+
+    ROS_INFO("[%s] STARTED\n", ros::this_node::getName().c_str());
   }
 
-  free(tracker);
-  exit(EXIT_SUCCESS);
-}
+  void Bbox3dTracker::update()
+  {
+    ROS_INFO("UPADTE");
+  }
+
+  /*
+   * @brief Callback function to handle the bounding boxes reception
+   *
+   * @param msg: BoundingBoxes3d. ROS message received
+   */
+  void Bbox3dTracker::bboxes3dCallback(const BoundingBoxes3d::ConstPtr & msg)
+  {
+    if (target_class_ == "")
+      return;
+
+    std::vector<BoundingBox3d> targets = msg->bounding_boxes;
+    if (targetsDetected(targets))
+    {
+      ROS_INFO("=== Targets Detected ===");
+      
+      // TODO(fgonzalezr1998)
+    }
+    else
+    {
+      ROS_INFO("+++ No Targets +++");
+    }
+  }
+
+  bool Bbox3dTracker::targetsDetected(
+    const std::vector<BoundingBox3d> & targets)
+  {
+    bool found = false;
+    for (int i = 0; i < targets.size() && !found; i++)
+    {
+      found = targets.at(i).Class == target_class_;
+    }
+
+    return found;
+  }
+
+  /*
+   * @brief Set up the interested class for the tracking
+   *
+   * @param class_name: string. Name of the interested class
+   */
+  void Bbox3dTracker::setTarget(const std::string & class_name)
+  {
+    target_class_ = class_name;
+  }
+}  // namespace bbox3d_tracker

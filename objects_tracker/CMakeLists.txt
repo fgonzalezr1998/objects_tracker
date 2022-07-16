@@ -199,7 +199,7 @@ roslint_cpp(
   include/${PROJECT_NAME}/Tracker.h
   src/${PROJECT_NAME}/ObjectsTracker.cpp
   src/${PROJECT_NAME}/Tracker.cpp
-  src/${PROJECT_NAME}_node.cpp}
+  src/${PROJECT_NAME}_node.cpp
 )
 
 ## Add gtest based cpp test target and link libraries

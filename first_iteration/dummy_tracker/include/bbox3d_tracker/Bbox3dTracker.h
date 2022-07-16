@@ -1,7 +1,7 @@
 /*********************************************************************
 *  Software License Agreement (BSD License)
 *
-*   Copyright (c) 2021
+*   Copyright (c) 2022
 *   All rights reserved.
 *
 *   Redistribution and use in source and binary forms, with or without
@@ -34,24 +34,39 @@
 
 /* Author: Fernando González fergonzaramos@yahoo.es  */
 
-#include "objects_tracker/ObjectsTracker.h"
+#ifndef BBOX3D_TRACKER_BBOX3DTRACKER_H
+#define BBOX3D_TRACKER_BBOX3DTRACKER_H
 
-int
-main(int argc, char ** argv)
+#include <ros/ros.h>
+#include <string>
+#include <vector>
+#include "gb_visual_detection_3d_msgs/BoundingBoxes3d.h"
+#include "gb_visual_detection_3d_msgs/BoundingBox3d.h"
+
+using gb_visual_detection_3d_msgs::BoundingBoxes3d;
+using gb_visual_detection_3d_msgs::BoundingBox3d;
+
+namespace bbox3d_tracker
 {
-  ros::init(argc, argv, "objects_tracker_node");
+class Bbox3dTracker
+{
+  public:
+    Bbox3dTracker();
 
-  objects_tracker::ObjectsTracker *tracker =
-    new objects_tracker::ObjectsTracker();
+    void setTarget(const std::string & class_name);
+    void update();
 
-  ros::Rate rate(10);
-  while (ros::ok())
-  {
-    ros::spinOnce();
-    tracker->update();
-    rate.sleep();
-  }
+  private:
+    void bboxes3dCallback(const BoundingBoxes3d::ConstPtr & msg);
+    bool targetsDetected(const std::vector<BoundingBox3d> & targets);
 
-  free(tracker);
-  exit(EXIT_SUCCESS);
-}
+    ros::NodeHandle nh_;
+    ros::Subscriber bboxes3d_sub_;
+    std::string target_class_;
+    ros::Time last_detection_;
+
+    const std::string bboxes3d_topic_ = "/dummy_bboxes3d";
+};
+}  // namespace bbox3d_tracker
+
+#endif  // BBOX3D_TRACKER_BBOX3DTRACKER_H

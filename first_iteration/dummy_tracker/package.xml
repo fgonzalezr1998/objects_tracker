@@ -50,6 +50,7 @@
   <!--   <doc_depend>doxygen</doc_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
 
+	<build_depend>roslint</build_depend>
   <build_depend>gb_visual_detection_3d_msgs</build_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>visualization_msgs</build_depend>

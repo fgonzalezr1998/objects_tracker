@@ -1,7 +1,7 @@
 /*********************************************************************
 *  Software License Agreement (BSD License)
 *
-*   Copyright (c) 2021
+*   Copyright (c) 2022
 *   All rights reserved.
 *
 *   Redistribution and use in source and binary forms, with or without
@@ -34,24 +34,26 @@
 
 /* Author: Fernando González fergonzaramos@yahoo.es  */
 
-#include "objects_tracker/ObjectsTracker.h"
+#include "bbox3d_tracker/Bbox3dTracker.h"
+
+#define NODE_FREQ 5.0
 
 int
 main(int argc, char ** argv)
 {
-  ros::init(argc, argv, "objects_tracker_node");
+  ros::init(argc, argv, "bboxes3d_tracker_node");
 
-  objects_tracker::ObjectsTracker *tracker =
-    new objects_tracker::ObjectsTracker();
+  bbox3d_tracker::Bbox3dTracker tracker;
+  tracker.setTarget("dummy");
 
-  ros::Rate rate(10);
+  ros::Rate loop_rate(NODE_FREQ);
   while (ros::ok())
   {
     ros::spinOnce();
-    tracker->update();
-    rate.sleep();
+    tracker.update();
+
+    loop_rate.sleep();
   }
 
-  free(tracker);
   exit(EXIT_SUCCESS);
 }

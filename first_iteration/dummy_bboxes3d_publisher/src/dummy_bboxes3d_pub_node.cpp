@@ -1,6 +1,8 @@
 #include <ros/ros.h>
 #include <visualization_msgs/Marker.h>
 #include "gb_visual_detection_3d_msgs/BoundingBox3d.h"
+#include "gb_visual_detection_3d_msgs/BoundingBoxes3d.h"
+#include <vector>
 
 class DummyBbox3dPublisher
 {
@@ -14,8 +16,8 @@ public:
 		current_pos_ = start_;
 		left_ = true;
 
-		bbox_pub_ = nh_.advertise<gb_visual_detection_3d_msgs::BoundingBox3d>(
-			"/dummy_bbox3d", 1);
+		bbox_pub_ = nh_.advertise<gb_visual_detection_3d_msgs::BoundingBoxes3d>(
+			"/dummy_bboxes3d", 1);
 		marker_pub_ = nh_.advertise<visualization_msgs::Marker>(
 			"/dummy_bbox3d_marker", 1);
 	}
@@ -23,7 +25,7 @@ public:
 	void
 	step()
 	{
-		gb_visual_detection_3d_msgs::BoundingBox3d msg;
+		gb_visual_detection_3d_msgs::BoundingBoxes3d msg;
 		visualization_msgs::Marker marker_msg;
 		double width = 0.5;
 		double distance = 3.0;
@@ -37,7 +39,6 @@ public:
 			current_pos_ += step_;
 		else
 			current_pos_ -= step_;
-
 
 		if (current_pos_ > end_)
 			left_ = false;
@@ -59,41 +60,48 @@ private:
 
 	void
 	composeMsg(
-		gb_visual_detection_3d_msgs::BoundingBox3d & msg,
+		gb_visual_detection_3d_msgs::BoundingBoxes3d & msg,
 		double width, double distance)
 	{
-		msg.Class = "dummy";
-		msg.probability = 1.0;
-		msg.xmax = distance + (width / 2.0);
-		msg.xmin = distance - (width / 2.0);
+		gb_visual_detection_3d_msgs::BoundingBox3d bbox;
+		std::vector<gb_visual_detection_3d_msgs::BoundingBox3d> v;
+	
+		bbox.Class = "dummy";
+		bbox.probability = 1.0;
+		bbox.xmax = distance + (width / 2.0);
+		bbox.xmin = distance - (width / 2.0);
 
-		msg.ymax = current_pos_ + (width / 2.0);
-		msg.ymin = current_pos_ - (width / 2.0);
+		bbox.ymax = current_pos_ + (width / 2.0);
+		bbox.ymin = current_pos_ - (width / 2.0);
 
-		msg.zmax = width / 2.0;
-		msg.zmin = -width / 2.0;
+		bbox.zmax = width / 2.0;
+		bbox.zmin = -width / 2.0;
+
+		msg.bounding_boxes =
+			std::vector<gb_visual_detection_3d_msgs::BoundingBox3d>(1, bbox);
 	}
 
 	void
 	composeMarker(visualization_msgs::Marker & marker_msg,
-		const gb_visual_detection_3d_msgs::BoundingBox3d & msg)
+		const gb_visual_detection_3d_msgs::BoundingBoxes3d & msg)
 	{
+		gb_visual_detection_3d_msgs::BoundingBox3d bbox = msg.bounding_boxes.at(0);
 		marker_msg.header.frame_id = "camera_link";
 		marker_msg.type = visualization_msgs::Marker::CUBE;
 		marker_msg.action = visualization_msgs::Marker::MODIFY;
 
-		marker_msg.pose.position.x = (msg.xmax + msg.xmin) / 2.0;
-		marker_msg.pose.position.y = (msg.ymax + msg.ymin) / 2.0;
-		marker_msg.pose.position.z = (msg.zmax + msg.zmin) / 2.0;
+		marker_msg.pose.position.x = (bbox.xmax + bbox.xmin) / 2.0;
+		marker_msg.pose.position.y = (bbox.ymax + bbox.ymin) / 2.0;
+		marker_msg.pose.position.z = (bbox.zmax + bbox.zmin) / 2.0;
 
 		marker_msg.pose.orientation.x = 0.0;
     marker_msg.pose.orientation.y = 0.0;
     marker_msg.pose.orientation.z = 0.0;
     marker_msg.pose.orientation.w = 1.0;
 
-		marker_msg.scale.x = msg.xmax - msg.xmin;
-		marker_msg.scale.y = msg.ymax - msg.ymin;
-		marker_msg.scale.z = msg.zmax - msg.zmin;
+		marker_msg.scale.x = bbox.xmax - bbox.xmin;
+		marker_msg.scale.y = bbox.ymax - bbox.ymin;
+		marker_msg.scale.z = bbox.zmax - bbox.zmin;
 
 		marker_msg.color.r = 1.0;
 		marker_msg.color.g = 0.0;

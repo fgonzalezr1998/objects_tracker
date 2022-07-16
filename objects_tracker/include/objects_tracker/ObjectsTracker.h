@@ -44,6 +44,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <map>
 
 #include "objects_tracker/Tracker.h"
 
