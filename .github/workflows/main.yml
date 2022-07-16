@@ -46,7 +46,7 @@ jobs:
           echo $PWD
           mkdir -p ~/catkin_ws/src
           cd ~/catkin_ws && catkin_make
-          ln -s $(pwd) ~/catkin_make/src
+          ln -s $(pwd) ~/catkin_ws/src
           source ~/catkin_ws/devel/setup.bash
           sudo rosdep install -y --from-paths src --ignore-src --rosdistro noetic
           catkin_make
