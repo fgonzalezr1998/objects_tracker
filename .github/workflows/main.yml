@@ -48,5 +48,5 @@ jobs:
           cd ~/catkin_ws && catkin_make
           ln -s $SRC_DIR ~/catkin_ws/src/objetcs_tracker
           source ~/catkin_ws/devel/setup.bash
-          sudo rosdep install -y --from-paths src --ignore-src --rosdistro noetic
+          rosdep install -y --from-paths src --ignore-src --rosdistro noetic
           catkin_make
