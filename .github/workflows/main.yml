@@ -41,8 +41,9 @@ jobs:
           echo '=== FIRST STEP FINISHED ==='
       
       # Compile the source code
-      - name: Install ROS Noetic
+      - name: Compile src
         run: |
+          source /opt/ros/noetic/setup.bash
           mkdir -p ~/catkin_ws/src
           cd ~/catkin_ws && catkin_make
           ln -s $(pwd) ~/catkin_ws/src
