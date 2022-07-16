@@ -35,15 +35,14 @@ jobs:
           sudo apt install ros-noetic-ros-base
           sudo apt install python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential
           sudo apt install python3-rosdep
-          source /opt/ros/noetic/setup.bash
-          sudo rosdep init
-          rosdep update
           echo '=== FIRST STEP FINISHED ==='
       
       # Compile the source code
       - name: Compile src
         run: |
           source /opt/ros/noetic/setup.bash
+          sudo rosdep init
+          rosdep update
           mkdir -p ~/catkin_ws/src
           cd ~/catkin_ws && catkin_make
           ln -s $(pwd) ~/catkin_ws/src
