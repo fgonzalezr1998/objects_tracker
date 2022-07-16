@@ -33,16 +33,19 @@ jobs:
           curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
           sudo apt update
           sudo apt install ros-noetic-ros-base
-          source /opt/ros/noetic/setup.bash
           sudo apt install python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential
           sudo apt install python3-rosdep
+          source /opt/ros/noetic/setup.bash
           sudo rosdep init
           rosdep update
+          echo '=== FIRST STEP FINISHED ==='
+      
+      # Compile the source code
+      - name: Install ROS Noetic
+        run: |
           mkdir -p ~/catkin_ws/src
           cd ~/catkin_ws && catkin_make
           ln -s $(pwd) ~/catkin_ws/src
           source ~/catkin_ws/devel/setup.bash
           sudo rosdep install -y --from-paths src --ignore-src --rosdistro noetic
           catkin_make
-          
-
