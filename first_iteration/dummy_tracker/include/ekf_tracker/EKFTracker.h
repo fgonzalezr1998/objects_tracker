@@ -34,48 +34,54 @@
 
 /* Author: Fernando González fergonzaramos@yahoo.es  */
 
-#ifndef BBOX3D_TRACKER_BBOX3DTRACKER_H
-#define BBOX3D_TRACKER_BBOX3DTRACKER_H
+#ifndef EKF_TRACKER_EKFTRACKER_H
+#define EKF_TRACKER_EKFTRACKER_H
 
-#include <ros/ros.h>
-#include <string>
-#include <vector>
-#include "gb_visual_detection_3d_msgs/BoundingBoxes3d.h"
-#include "gb_visual_detection_3d_msgs/BoundingBox3d.h"
-#include "ekf_tracker/EKFTracker.h"
-
-using gb_visual_detection_3d_msgs::BoundingBoxes3d;
-using gb_visual_detection_3d_msgs::BoundingBox3d;
-
-namespace bbox3d_tracker
+namespace ekf_tracker
 {
+typedef struct TgtStimationType TgtStimationType;
+typedef struct StateType StateType;
+typedef struct ControlDataType ControlDataType;
+typedef struct CartesianCoordType CartesianCoordType;
+typedef struct GaussianErrorType GaussianErrorType;
 
-struct TgtType
+struct CartesianCoordType
 {
-  BoundingBox3d bbox;
-  double elapsed_time;
+  double x;
+  double y;
+  double z;
 };
-class Bbox3dTracker
+
+struct GaussianErrorType
+{
+  double mean;
+  double variance;
+};
+
+struct StateType
+{
+  CartesianCoordType position;
+  CartesianCoordType linearVel;
+};
+
+struct ControlDataType
+{
+  GaussianErrorType positionError;
+  GaussianErrorType linearVelError;
+};
+
+struct TgtStimationType
+{
+  uint8_t id;
+  StateType state;
+  ControlDataType controlData;
+};
+
+class EKFTracker
 {
   public:
-    Bbox3dTracker();
-
-    void setTarget(const std::string & class_name, const std::string & topic,
-      const std::string & fixed_frame);
-    void update();
-
-  private:
-    void bboxes3dCallback(const BoundingBoxes3d::ConstPtr & msg);
-    bool targetsDetected(const std::vector<BoundingBox3d> & targets);
-    bool isTarget(const std::string & bbox_class);
-
-    ros::NodeHandle nh_;
-    ros::Subscriber bboxes3d_sub_;
-    std::string target_class_, fixed_frame_, working_frame_;
-    ros::Time last_detection_ts_;
-    std::vector<TgtType> tgts_list_;  // List of targets
-    std::vector<ekf_tracker::TgtStimationType> stimations_list_;  // List of stimations
+    EKFTracker();
 };
-}  // namespace bbox3d_tracker
+}  // namespace ekf_tracker
 
-#endif  // BBOX3D_TRACKER_BBOX3DTRACKER_H
+#endif  // EKF_TRACKER_EKFTRACKER_H

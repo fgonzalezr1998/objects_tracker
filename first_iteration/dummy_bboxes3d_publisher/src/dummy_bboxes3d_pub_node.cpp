@@ -79,6 +79,7 @@ private:
 
 		msg.bounding_boxes =
 			std::vector<gb_visual_detection_3d_msgs::BoundingBox3d>(1, bbox);
+		msg.header.frame_id = "camera_link";
 	}
 
 	void

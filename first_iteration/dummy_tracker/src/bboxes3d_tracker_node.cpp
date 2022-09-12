@@ -44,7 +44,7 @@ main(int argc, char ** argv)
   ros::init(argc, argv, "bboxes3d_tracker_node");
 
   bbox3d_tracker::Bbox3dTracker tracker;
-  tracker.setTarget("dummy");
+  tracker.setTarget("dummy", "/dummy_bboxes3d", "camera_link");
 
   ros::Rate loop_rate(NODE_FREQ);
   while (ros::ok())

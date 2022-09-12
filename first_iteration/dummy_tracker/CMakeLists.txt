@@ -126,6 +126,11 @@ add_library(bbox3d_tracker
 	src/bbox3d_tracker/Bbox3dTracker.cpp
 )
 
+# Declare a C++ library
+add_library(ekf_tracker
+	src/ekf_tracker/EKFTracker.cpp
+)
+
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
@@ -210,5 +215,7 @@ target_link_libraries(bboxes3d_tracker_node
 roslint_cpp(
 	include/bbox3d_tracker/Bbox3dTracker.h
 	src/bbox3d_tracker/Bbox3dTracker.cpp
+	include/ekf_tracker/EKFTracker.h
+	src/ekf_tracker/EKFTracker.cpp
 	src/bboxes3d_tracker_node.cpp
 )

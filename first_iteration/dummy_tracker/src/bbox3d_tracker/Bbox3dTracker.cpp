@@ -43,62 +43,80 @@ using gb_visual_detection_3d_msgs::BoundingBox3d;
 
 namespace bbox3d_tracker
 {
-  Bbox3dTracker::Bbox3dTracker():
-    nh_("~"), target_class_(""), last_detection_(0.0)
+Bbox3dTracker::Bbox3dTracker():
+  nh_("~"), target_class_(""), last_detection_ts_(0.0)
+{
+  tgts_list_.clear();
+  ROS_INFO("[%s] STARTED\n", ros::this_node::getName().c_str());
+}
+
+void Bbox3dTracker::update()
+{
+  ROS_INFO("UPDATE");
+}
+
+/*
+  * @brief Callback function to handle the bounding boxes reception
+  *
+  * @param msg: BoundingBoxes3d. ROS message received
+  */
+void Bbox3dTracker::bboxes3dCallback(const BoundingBoxes3d::ConstPtr & msg)
+{
+  // Clear detected targets
+  tgts_list_.clear();
+  if (target_class_ == "")
+    return;
+
+  working_frame_ = msg->header.frame_id;
+  std::vector<BoundingBox3d> bboxes = msg->bounding_boxes;
+  if (targetsDetected(bboxes))
   {
-    bboxes3d_sub_ = nh_.subscribe(bboxes3d_topic_, 1,
-      &Bbox3dTracker::bboxes3dCallback, this);
+    ROS_INFO("=== Targets Detected ===");
 
-    ROS_INFO("[%s] STARTED\n", ros::this_node::getName().c_str());
-  }
-
-  void Bbox3dTracker::update()
-  {
-    ROS_INFO("UPADTE");
-  }
-
-  /*
-   * @brief Callback function to handle the bounding boxes reception
-   *
-   * @param msg: BoundingBoxes3d. ROS message received
-   */
-  void Bbox3dTracker::bboxes3dCallback(const BoundingBoxes3d::ConstPtr & msg)
-  {
-    if (target_class_ == "")
-      return;
-
-    std::vector<BoundingBox3d> targets = msg->bounding_boxes;
-    if (targetsDetected(targets))
+    // For each target, update the stimation
+    for (auto bbox : bboxes)
     {
-      ROS_INFO("=== Targets Detected ===");
-      
-      // TODO(fgonzalezr1998)
-    }
-    else
-    {
-      ROS_INFO("+++ No Targets +++");
+      if (isTarget(bbox.Class))
+      {
+        ROS_INFO("=== Update Stimation EKF ===");
+      }
     }
   }
-
-  bool Bbox3dTracker::targetsDetected(
-    const std::vector<BoundingBox3d> & targets)
+  else
   {
-    bool found = false;
-    for (int i = 0; i < targets.size() && !found; i++)
-    {
-      found = targets.at(i).Class == target_class_;
-    }
-
-    return found;
+    ROS_INFO("+++ No Targets +++");
   }
+}
 
-  /*
-   * @brief Set up the interested class for the tracking
-   *
-   * @param class_name: string. Name of the interested class
-   */
-  void Bbox3dTracker::setTarget(const std::string & class_name)
+bool Bbox3dTracker::targetsDetected(
+  const std::vector<BoundingBox3d> & targets)
+{
+  bool found = false;
+  for (int i = 0; i < targets.size() && !found; i++)
   {
-    target_class_ = class_name;
+    found = isTarget(targets.at(i).Class);
   }
+
+  return found;
+}
+
+bool Bbox3dTracker::isTarget(const std::string & bbox_class)
+{
+  return bbox_class == target_class_;
+}
+
+/*
+  * @brief Set up the interested class for the tracking
+  *
+  * @param class_name: string. Name of the interested class
+  */
+void Bbox3dTracker::setTarget(const std::string & class_name, const std::string & topic,
+  const std::string & fixed_frame)
+{
+  target_class_ = class_name;
+  fixed_frame_ = fixed_frame;
+
+  bboxes3d_sub_ = nh_.subscribe(topic, 1,
+    &Bbox3dTracker::bboxes3dCallback, this);
+}
 }  // namespace bbox3d_tracker
